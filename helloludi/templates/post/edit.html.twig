@@ -432,23 +432,15 @@
         </div>
 
         {# Contenu #}
-        <div class="form-group">
-            <label class="form-label">
-                <i class="fi fi-rs-document"></i>
-                {{ form_label(form.content) }}
-            </label>
-            <div class="rich-editor-container" id="richEditor">
-                {% include 'components/_editor_toolbar.html.twig' %}
-                <div class="editor-content" contenteditable="true" id="editorContent">
-                    {% if form.content.vars.value %}
-                        {{ form.content.vars.value | raw }}
-                    {% else %}
-                        <p>Commencez à taper votre contenu ici...</p>
-                    {% endif %}
-                </div>
+        <div class="conditional-section content-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="bi bi-calendar-event"></i>
+                    {{ form_label(form.content) }}
+                </label>
+                {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.content) }}
             </div>
-            {{ form_widget(form.content, {'attr': {'style': 'display: none;', 'id': 'hiddenContent'}}) }}
-            {{ form_errors(form.content) }}
         </div>
 
         {# Champs conditionnels pour les événements #}

@@ -433,10 +433,16 @@
         </div>
 
         {# Contenu avec éditeur riche #}
-        {% include 'components/_rich_editor_optimized.html.twig' with {
-            'field_name': 'post[content]',
-            'content': post.content|default('')
-        } %}
+        <div class="conditional-section content-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="bi bi-calendar-event"></i>
+                    {{ form_label(form.content) }}
+                </label>
+                {{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.content) }}
+            </div>
+        </div>
 
         {# Champs conditionnels pour les événements #}
         <div class="conditional-section date-wrapper" style="display: none;">
@@ -523,176 +529,4 @@
 
         {{ form_end(form) }}
     </div>
-
-    {# Modals pour l'éditeur #}
-    {% include 'components/_editor_modals_optimized.html.twig' %}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Animation focus sur les form-groups
-            const formGroups = document.querySelectorAll('.form-group');
-            formGroups.forEach(group => {
-                const input = group.querySelector('.form-control, .editor-content');
-                if (input) {
-                    input.addEventListener('focus', () => {
-                        group.classList.add('focused');
-                    });
-                    input.addEventListener('blur', () => {
-                        group.classList.remove('focused');
-                    });
-                }
-            });
-
-            // Gestion du focus sur l'éditeur
-            const editorContainer = document.querySelector('.rich-editor-container');
-            const editorContent = document.querySelector('.editor-content');
-            if (editorContent && editorContainer) {
-                editorContent.addEventListener('focus', () => {
-                    editorContainer.classList.add('focused');
-                });
-                editorContent.addEventListener('blur', () => {
-                    editorContainer.classList.remove('focused');
-                });
-            }
-
-            // Click sur les tags de catégorie
-            const categoryTags = document.querySelectorAll('.category-tag');
-            const categorySelect = document.querySelector('select[name="post[category]"]');
-
-            categoryTags.forEach(tag => {
-                tag.addEventListener('click', () => {
-                    const categoryClass = tag.classList[1]; // recipe, photo, etc.
-                    if (categorySelect) {
-                        categorySelect.value = categoryClass;
-                        categorySelect.dispatchEvent(new Event('change'));
-                    }
-                });
-            });
-
-            // Upload d'image SEULEMENT pour le formulaire principal
-            const mainImageInput = document.querySelector('input[name="post[image]"]');
-            const mainUploadButton = document.querySelector('.main-upload-button');
-
-            if (mainImageInput && mainUploadButton) {
-                mainUploadButton.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    mainImageInput.click();
-                });
-
-                mainImageInput.addEventListener('change', (e) => {
-                    const fileName = e.target.files[0]?.name;
-                    if (fileName) {
-                        const uploadText = mainUploadButton.querySelector('.upload-text');
-                        if (uploadText) {
-                            uploadText.textContent = `📄 ${fileName}`;
-                            mainUploadButton.style.borderColor = '#4ecdc4';
-                            mainUploadButton.style.background = '#f0fffe';
-                        }
-                    }
-                });
-
-                // Drag and drop SEULEMENT sur le bouton principal
-                mainUploadButton.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    mainUploadButton.style.borderColor = '#4ecdc4';
-                    mainUploadButton.style.background = '#f0fffe';
-                });
-
-                mainUploadButton.addEventListener('dragleave', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    mainUploadButton.style.borderColor = '#dee2e6';
-                    mainUploadButton.style.background = '#f8f9fa';
-                });
-
-                mainUploadButton.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    if (e.dataTransfer.files.length) {
-                        mainImageInput.files = e.dataTransfer.files;
-                        mainImageInput.dispatchEvent(new Event('change'));
-                    }
-                });
-            }
-
-            // Gestion de l'affichage conditionnel des champs selon la catégorie
-            const categoryField = document.querySelector('select[name="post[category]"]');
-            const dateWrapper = document.querySelector('.date-wrapper');
-            const placeWrapper = document.querySelector('.place-wrapper');
-            const personsNumberWrapper = document.querySelector('.personsNumber-wrapper');
-            const cookingTimeWrapper = document.querySelector('.cookingTime-wrapper');
-
-            function toggleFieldsByCategory() {
-                const category = categoryField.value;
-
-                // Masquer tous les champs conditionnels
-                [dateWrapper, placeWrapper, personsNumberWrapper, cookingTimeWrapper].forEach(wrapper => {
-                    if (wrapper) wrapper.style.display = 'none';
-                });
-
-                // Afficher les champs selon la catégorie
-                if (category === 'event') {
-                    if (dateWrapper) dateWrapper.style.display = 'block';
-                    if (placeWrapper) placeWrapper.style.display = 'block';
-                } else if (category === 'recipe') {
-                    if (personsNumberWrapper) personsNumberWrapper.style.display = 'block';
-                    if (cookingTimeWrapper) cookingTimeWrapper.style.display = 'block';
-                }
-            }
-
-            // Appliquer au chargement et au changement
-            if (categoryField) {
-                toggleFieldsByCategory();
-                categoryField.addEventListener('change', toggleFieldsByCategory);
-            }
-        });
-    </script>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
-    <script src="{{ asset('js/RichEditor.js') }}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialisation de l'éditeur
-            const hiddenField = document.querySelector('textarea[name="post[content]"]');
-            const editor = new RichEditor('richEditor', {
-                hiddenFieldId: hiddenField ? hiddenField.id : 'post_content',
-                uploadUrl: '{{ path('upload_image') }}'
-            });
-
-            // Si on est en mode édition et qu'il y a du contenu existant
-            {% if form.content.vars.value %}
-            editor.updateHiddenField();
-            {% endif %}
-
-            // Validation avant soumission
-            document.getElementById('postForm').addEventListener('submit', function (e) {
-                const editorContent = document.getElementById('editorContent');
-                const hiddenField = document.querySelector('textarea[name="post[content]"]');
-
-                if (editorContent && hiddenField) {
-                    // Forcer la mise à jour du champ caché
-                    hiddenField.value = editorContent.innerHTML;
-                    hiddenField.style.display = 'none !important';
-                    console.log('Contenu synchronisé:', hiddenField.value);
-                }
-
-                const textContent = editorContent ? editorContent.textContent.trim() : '';
-
-                if (!textContent || textContent.length < 10) {
-                    e.preventDefault();
-                    alert('Le contenu de l\'article doit faire au moins 10 caractères.');
-                    if (editorContent) editorContent.focus();
-                    return false;
-                }
-
-                // Ne pas empêcher la soumission si tout est OK
-                return true;
-            });
-        });
-    </script>
 {% endblock %}
