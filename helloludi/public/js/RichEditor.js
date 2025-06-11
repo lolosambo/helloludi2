@@ -21,6 +21,7 @@ class RichEditor {
         this.selectedImage = null;
         this.selectedTable = null;
         this.selectedVideo = null;
+        this.savedRange = null;
 
         // Historique pour undo/redo
         this.history = [];
@@ -347,6 +348,8 @@ class RichEditor {
      * Affichage du modal de lien
      */
     showLinkModal() {
+        this.saveSelection();
+
         const selection = window.getSelection();
         const selectedText = selection.toString();
 
@@ -415,6 +418,7 @@ class RichEditor {
      * Affichage du modal d'image
      */
     showImageModal() {
+        this.saveSelection();
         this.showModal('imageModal');
     }
 
@@ -686,6 +690,7 @@ class RichEditor {
      * Affichage du modal de tableau
      */
     showTableModal() {
+        this.saveSelection();
         this.showModal('tableModal');
     }
 
@@ -839,10 +844,14 @@ class RichEditor {
      * Affichage du modal de vidéo
      */
     showVideoModal() {
+        this.saveSelection();
         this.showModal('videoModal');
     }
 
     insertVideoAtCursor(videoWrapper) {
+        this.restoreSelection();
+        this.editor.focus();
+
         const selection = window.getSelection();
 
         if (selection.rangeCount > 0) {
@@ -861,6 +870,7 @@ class RichEditor {
         }
 
         this.updateHiddenField();
+        this.savedRange = null;
     }
 
     /**
@@ -1239,6 +1249,7 @@ class RichEditor {
      * Insertion de nœud au curseur
      */
     insertNodeAtCursor(node) {
+        this.restoreSelection();
         this.editor.focus();
 
         const selection = window.getSelection();
@@ -1269,6 +1280,7 @@ class RichEditor {
         }
 
         this.updateHiddenField();
+        this.savedRange = null;
     }
 
     /**
@@ -1318,6 +1330,21 @@ class RichEditor {
     updateHiddenField() {
         if (this.hiddenField) {
             this.hiddenField.value = this.editor.innerHTML;
+        }
+    }
+
+    saveSelection() {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+            this.savedRange = sel.getRangeAt(0).cloneRange();
+        }
+    }
+
+    restoreSelection() {
+        if (this.savedRange) {
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(this.savedRange);
         }
     }
 
