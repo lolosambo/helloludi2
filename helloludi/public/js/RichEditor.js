@@ -23,6 +23,7 @@ class RichEditor {
         this.selectedImage = null;
         this.selectedTable = null;
         this.selectedVideo = null;
+        this.imageToEdit = null;
 
         this.init();
     }
@@ -70,7 +71,13 @@ class RichEditor {
         };
         Object.keys(specials).forEach(id => {
             const btn = document.getElementById(id);
-            if (btn) btn.addEventListener('click', e => { e.preventDefault(); specials[id](); });
+            if (btn) {
+                btn.addEventListener('mousedown', () => this.saveSelection());
+                btn.addEventListener('click', e => {
+                    e.preventDefault();
+                    specials[id]();
+                });
+            }
         });
     }
 
@@ -204,7 +211,33 @@ class RichEditor {
         else if (urlInput && urlInput.value.trim()) src = urlInput.value.trim();
         if (!src) return;
         const alt = altInput ? altInput.value : '';
-        this.insertImageElement(src, alt);
+        if (this.imageToEdit) {
+            const img = this.imageToEdit.querySelector('img');
+            if (img) {
+                img.src = src;
+                img.alt = alt;
+                const w = document.getElementById('imageWidth')?.value;
+                const h = document.getElementById('imageHeight')?.value;
+                if (w) { img.style.width = w + 'px'; img.style.maxWidth = w + 'px'; } else {
+                    img.style.removeProperty('width');
+                    img.style.removeProperty('max-width');
+                }
+                if (h) img.style.height = h + 'px'; else img.style.removeProperty('height');
+                this.imageToEdit.style.float = '';
+                this.imageToEdit.style.display = '';
+                this.imageToEdit.style.textAlign = '';
+                this.imageToEdit.style.marginLeft = '';
+                this.imageToEdit.style.marginRight = '';
+                const align = document.querySelector('input[name="imageAlign"]:checked')?.value || 'left';
+                if (align === 'center') { this.imageToEdit.style.display = 'block'; this.imageToEdit.style.textAlign = 'center'; }
+                if (align === 'right') { this.imageToEdit.style.float = 'right'; this.imageToEdit.style.marginLeft = '15px'; }
+                if (align === 'left') { this.imageToEdit.style.float = 'left'; this.imageToEdit.style.marginRight = '15px'; }
+                this.imageToEdit = null;
+                this.updateHidden();
+            }
+        } else {
+            this.insertImageElement(src, alt);
+        }
     }
 
     async uploadImage(file) {
@@ -233,6 +266,28 @@ class RichEditor {
         const handle = document.createElement('div');
         handle.className = 'image-resize-handle';
         wrapper.appendChild(handle);
+
+        const editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'image-edit-btn btn btn-light btn-sm';
+        editBtn.innerHTML = '<i class="bi bi-pencil"></i>';
+        Object.assign(editBtn.style, {
+            position: 'absolute',
+            top: '4px',
+            right: '4px',
+            display: 'none',
+            padding: '2px 4px'
+        });
+        editBtn.addEventListener('click', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.selectImage(wrapper);
+            this.saveSelection();
+            this.fillImageModal(wrapper);
+            this.showModal('imageModal');
+        });
+        wrapper.appendChild(editBtn);
+        wrapper.style.position = 'relative';
         if (align === 'center') { wrapper.style.display = 'block'; wrapper.style.textAlign = 'center'; }
         if (align === 'right') { wrapper.style.float = 'right'; wrapper.style.marginLeft = '15px'; }
         if (align === 'left') { wrapper.style.float = 'left'; wrapper.style.marginRight = '15px'; }
@@ -285,6 +340,8 @@ class RichEditor {
         wrapper.classList.add('selected');
         const handle = wrapper.querySelector('.image-resize-handle');
         if (handle) handle.style.display = 'block';
+        const editBtn = wrapper.querySelector('.image-edit-btn');
+        if (editBtn) editBtn.style.display = 'block';
     }
 
     deselectImage() {
@@ -292,11 +349,39 @@ class RichEditor {
             this.selectedImage.classList.remove('selected');
             const handle = this.selectedImage.querySelector('.image-resize-handle');
             if (handle) handle.style.display = 'none';
+            const editBtn = this.selectedImage.querySelector('.image-edit-btn');
+            if (editBtn) editBtn.style.display = 'none';
             this.selectedImage = null;
         }
     }
 
-    showImageModal() { this.saveSelection(); this.showModal('imageModal'); }
+    showImageModal() {
+        this.imageToEdit = null;
+        this.saveSelection();
+        this.showModal('imageModal');
+    }
+
+    fillImageModal(wrapper) {
+        const img = wrapper.querySelector('img');
+        if (!img) return;
+        this.imageToEdit = wrapper;
+        const urlInput = document.getElementById('imageUrl');
+        const altInput = document.getElementById('imageAlt');
+        const wInput = document.getElementById('imageWidth');
+        const hInput = document.getElementById('imageHeight');
+        const alignLeft = document.getElementById('alignLeft');
+        const alignCenter = document.getElementById('alignCenter');
+        const alignRight = document.getElementById('alignRight');
+        if (urlInput) urlInput.value = img.src;
+        if (altInput) altInput.value = img.alt;
+        if (wInput) wInput.value = parseInt(img.style.width) || '';
+        if (hInput) hInput.value = parseInt(img.style.height) || '';
+        if (alignLeft && alignCenter && alignRight) {
+            if (wrapper.style.float === 'right') alignRight.checked = true;
+            else if (wrapper.style.float === 'left') alignLeft.checked = true;
+            else alignCenter.checked = true;
+        }
+    }
 
     /* ---------- table ---------- */
     async insertTable() {
