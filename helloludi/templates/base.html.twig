@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+        <link rel='stylesheet'
+              href='https://cdn-uicons.flaticon.com/2.6.0/uicons-regular-straight/css/uicons-regular-straight.css'>
+
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link href="/css/rich-editor.css" rel="stylesheet">
+        {% if app.user and app.user.theme == "brown" %}
+            <link rel="stylesheet" href="/css/style.css">
+        {% elseif app.user and app.user.theme == "white" %}
+            <link rel="stylesheet" href="/css/style_white.css">
+        {% elseif app.user and app.user.theme == "black" %}
+            <link rel="stylesheet" href="/css/style_black.css">
+        {% else %}
+            <link rel="stylesheet" href="/css/style.css">
+        {% endif %}
+    {% endblock %}
+
+    {% block javascripts %}
+        <script src="/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</head>
+<body>
+{% block body %}
+    <div class="container-fluid gx-0">
+        <div class="row blog-header gx-0">
+            <div class="col-12">
+                {% if app.request.cookies.get('accept_cookies') is null %}
+                    {% include 'cookies/banner.html.twig' %}
+                {% endif %}
+                <div class="row">
+                    <div class="col-12 blog-navigation-wrapper">
+                        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                            <div class="container-fluid">
+                                <!-- Bouton du menu hamburger pour petits écrans -->
+                                <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas"
+                                        data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+                                    <span class="navbar-toggler-icon"></span>
+                                </button>
+
+                                <!-- Menu classique pour écrans larges -->
+                                <div class="collapse navbar-collapse d-none d-lg-block">
+                                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" aria-current="page"
+                                               href="{{ path('homepage') }}">
+                                                <i class="fi fi-rs-house-chimney-window"></i> Accueil
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('who_am_i') }}">
+                                                <i class="fi fi-rs-mode-portrait"></i> Qui suis-je ?
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('recipes') }}">
+                                                <i class="fi fi-rs-recipe"></i> Recettes
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('photos') }}">
+                                                <i class="fi fi-rs-camera"></i> Mes photos
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('events') }}">
+                                                <i class="fi fi-rs-calendar-days"></i> Evènements
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('blabla') }}">
+                                                <i class="fi fi-rs-newspaper"></i> Mes actus
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_contact') }}">
+                                                <i class="fi fi-rs-envelope"></i> Me contacter
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <!-- Section utilisateur -->
+                                    {% if app.user %}
+                                        Bienvenue {{ app.user.getPseudo() }} !
+                                        <a href="{{ path('user_edit', { 'id': app.user.id }) }}"
+                                           class="btn btn-sm btn-purple" data-bs-toggle="tooltip"
+                                           data-bs-placement="top" title="Voir le profile">
+                                            <i class="fi fi-rs-circle-user"></i>
+                                        </a>
+                                        <a href="{{ path('app_logout') }}" class="btn btn-sm btn-purple"
+                                           data-bs-toggle="tooltip" data-bs-placement="top" title="Se déconnecter">
+                                            <i class="fi fi-rs-leave"></i>
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ path('app_registration') }}" class="btn btn-sm btn-orange">
+                                            <i class="fi fi-rs-subscription"></i> S'inscrire
+                                        </a>
+                                        <a href="{{ path('app_login') }}" class="btn btn-sm btn-orange">
+                                            <i class="fi fi-rs-circle-user"></i> Se connecter
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Barre de recherche -->
+                                    <form class="d-flex mt-1" role="search">
+                                        <input class="form-control me-2" type="search" placeholder="Rechercher"
+                                               aria-label="Search">
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="fi fi-rs-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                                <!-- Off-canvas menu pour petits écrans -->
+                                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasMenu"
+                                     aria-labelledby="offcanvasMenuLabel">
+                                    <div class="offcanvas-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="offcanvas-body">
+                                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" aria-current="page"
+                                                   href="{{ path('homepage') }}">
+                                                    <i class="fi fi-rs-house-chimney-window"></i> Accueil
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('who_am_i') }}">
+                                                    <i class="fi fi-rs-mode-portrait"></i> Qui suis-je ?
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('recipes') }}">
+                                                    <i class="fi fi-rs-recipe"></i> Recettes
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('photos') }}">
+                                                    <i class="fi fi-rs-camera"></i> Mes photos
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('events') }}">
+                                                    <i class="fi fi-rs-calendar-days"></i> Evènements
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('blabla') }}">
+                                                    <i class="fi fi-rs-newspaper"></i> Mes actus
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="{{ path('app_contact') }}">
+                                                    <i class="fi fi-rs-envelope"></i> Me contacter
+                                                </a>
+                                            </li>
+                                        </ul>
+
+                                        <!-- Section utilisateur -->
+                                        {% if app.user %}
+                                            Bienvenue {{ app.user.getPseudo() }} !
+                                            <a href="{{ path('user_edit', { 'id': app.user.id }) }}"
+                                               class="btn btn-sm btn-purple" data-bs-toggle="tooltip"
+                                               data-bs-placement="top" title="Voir le profile">
+                                                <i class="fi fi-rs-circle-user"></i>
+                                            </a>
+                                            <a href="{{ path('app_logout') }}" class="btn btn-sm btn-purple"
+                                               data-bs-toggle="tooltip" data-bs-placement="top" title="Se déconnecter">
+                                                <i class="fi fi-rs-leave"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('app_registration') }}" class="btn btn-sm btn-orange">
+                                                <i class="fi fi-rs-subscription"></i> S'inscrire
+                                            </a>
+                                            <a href="{{ path('app_login') }}" class="btn btn-sm btn-orange">
+                                                <i class="fi fi-rs-circle-user"></i> Se connecter
+                                            </a>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12" style="overflow: hidden; margin-top: 0;">
+                <img src="{{ asset('img/header.jpg') }}" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+
+    <div class="row gx-0 main mb-5">
+        <div class="col-12 blog-content text-center">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+
+    <div class="row gx-0 blog-footer">
+        <div class="col-4 footer-part text-center">
+            <h4>Mes évènement à venir</h4>
+            {% set now = "now"|date("Y-m-d H:i:s") %}
+            <ul style="font-size: 12px; text-align: left;">
+                {% if eventsPosts is defined %}
+                    {% for eventsPost in eventsPosts %}
+                        {% set postDate = eventsPost.date|date("Y-m-d H:i:s") %}
+                        {% if postDate > now %}
+                            <a href="{{ path('post_detail', {"post": eventsPost.getId()}) }}">
+                                <li><i class="fi fi-rs-daily-calendar"></i> {{ eventsPost.date|date('d/m/Y') }}
+                                    : {{ eventsPost.title }}
+                                    ({{ eventsPost.place }})
+                            </a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-4 footer-part text-center">
+            <h4>Mes humeurs</h4>
+            <iframe style="border-radius:12px"
+                    src="https://open.spotify.com/embed/playlist/64vm3EzLk7NdCgCbELebBE?si=Dpv54ZgrRvma35xK4FcboA?utm_source=generator&theme=0"
+                    width="90%" height="100%"
+                    allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy">
+
+            </iframe>
+        </div>
+        <div class="col-4 footer-part text-center">
+            <h4>Mes infos</h4>
+            <p><a href="https://www.instagram.com/helloludi_blog/">
+                    <img src="{{ asset('img/instagram_logo.png') }}" width="40"> Mon instagram
+                </a>
+            </p>
+            <p><a href="{{ path("app_contact") }}">
+                    Me contacter directement
+                </a>
+            </p>
+        </div>
+    </div>
+    </div>
+
+
+    <script>
+        // Fix pour les boutons qui ne répondent pas
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                // Réattacher manuellement les événements aux boutons
+                document.querySelectorAll('.editor-btn').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        const editor = window.EditorAPI?.getInstance();
+                        if (!editor) return;
+
+                        const command = this.dataset.command;
+                        if (command) {
+                            console.log('Executing command:', command);
+                            editor.execCommand(command);
+                        } else {
+                            console.log('Special button clicked:', this.id);
+                            // Actions spéciales
+                            switch(this.id) {
+                                case 'linkBtn':
+                                    editor.showModal('link');
+                                    break;
+                                case 'imageBtn':
+                                    editor.showModal('image');
+                                    break;
+                                case 'quoteBtn':
+                                    editor.insertQuote();
+                                    break;
+                                case 'codeBtn':
+                                    editor.insertCode();
+                                    break;
+                            }
+                        }
+                    });
+                });
+
+                console.log('Manual event listeners attached');
+            }, 1000);
+        });
+    </script>
+{% endblock %}
+
+</body>
+</html>
+

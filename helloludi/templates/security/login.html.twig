@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block content %}
+    <br><br>
+    <div class="blog-form-element-wrapper">
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages {{ type }}">
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <form method="post">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
+
+            <h1 class="h3 mb-3 font-weight-normal">Connexion</h1>
+
+            <div class="row">
+                <div class="col-4 col-md-3 text-end me-2 mt-2">
+                    <label for="inputEmail">Email</label>
+                </div>
+                <div class="col-6 col-md-7 mt-2">
+                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+                </div>
+                <div class="col-4 col-md-3 text-end me-2 mt-2">
+                    <label for="inputPassword">Password</label>
+                </div>
+                <div class="col-6 col-md-7 mt-2">
+                    <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                </div>
+                <div class="col-12 text-start mt-2 text-center">
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Se rappeler de moi
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12 text-start mt-2 text-center">
+                    <button class="btn btn-orange" type="submit">
+                        <i class="fi fi-rs-circle-user"></i> Se connecter
+                    </button>
+                    <a href="{{ path('forgot_password') }}" class="btn btn-orange">
+                        <i class="fi fi-rs-password-lock"></i> Mot de passe oublié
+                    </a>
+                </div>
+            </div>
+
+            <input type="hidden" name="_csrf_token"
+                   value="{{ csrf_token('authenticate') }}"
+            >
+        </form>
+    </div>
+    <br><br>
+{% endblock %}

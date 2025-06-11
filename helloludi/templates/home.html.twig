@@ -1,0 +1,219 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    {# Messages Flash #}
+    {% for type, messages in app.flashes %}
+        <div class="row">
+            <div class="col-12">
+                <div class="flash-messages {{ type }}">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    {# Grille des posts #}
+    <div class="row g-4">
+        {% for post in posts %}
+            {# Définition de la traduction de catégorie #}
+            {% set categoryTrad = '' %}
+            {% if post.category == "recipe" %}
+                {% set categoryTrad = "Recette" %}
+            {% elseif post.category == "photo" %}
+                {% set categoryTrad = "Photo" %}
+            {% elseif post.category == "event" %}
+                {% set categoryTrad = "Evènement" %}
+            {% elseif post.category == "blabla" %}
+                {% set categoryTrad = "Blabla" %}
+            {% elseif post.category == "whoAmI" %}
+                {% set categoryTrad = "Qui suis-je ?" %}
+            {% endif %}
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100 post-card {{ post.category }}">
+                    {# Conteneur pour le ruban #}
+                    <div class="ribbon-wrapper">
+                        <div class="ribbon {{ post.category }}">{{ categoryTrad }}</div>
+                    </div>
+
+                    {# Image de la carte #}
+                    <div class="card-image-wrapper">
+                        <a href="{{ path('post_detail', {"post": post.getId()}) }}" class="text-decoration-none">
+                            {% if post.getImage() is not null %}
+                                <img src="{{ asset(post.image) }}" class="card-img-top" alt="{{ post.getTitle() }}">
+                            {% else %}
+                                <img src="/img/post-image-sample.png" class="card-img-top" alt="Image par défaut">
+                            {% endif %}
+                            <div class="card-overlay">
+                                <span class="view-more">Voir plus <i class="fi fi-rs-arrow-right"></i></span>
+                            </div>
+                        </a>
+                    </div>
+
+                    {# Corps de la carte #}
+                    <div class="card-body d-flex flex-column">
+                        <h4 class="card-title delius-swash-caps-regular">{{ post.getTitle() }}</h4>
+
+                        {# Informations spécifiques selon le type #}
+                        {% if post.category == "event" and post.getDate() and post.getPlace() %}
+                            <div class="event-info mb-2 info-pills">
+                                <span class="info-pill">
+                                    <i class="fi fi-rs-calendar"></i> {{ post.getDate() | date('d/m/Y') }}
+                                </span>
+                                <span class="info-pill">
+                                    <i class="fi fi-rs-marker"></i> {{ post.getPlace() }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        {% if post.category == "recipe" and post.getPersonsNumber() and post.getCookingTime() %}
+                            <div class="recipe-info mb-2 info-pills">
+                                <span class="info-pill">
+                                    <i class="fi fi-rs-users"></i> {{ post.getPersonsNumber() }} pers.
+                                </span>
+                                <span class="info-pill">
+                                    <i class="fi fi-rs-clock"></i> {{ post.getCookingTime() }} min
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        {# Contenu tronqué #}
+                        <p class="card-text flex-grow-1">
+                            {{ post.getContent()|striptags|u.truncate(140, ' [...]', false) }}
+                        </p>
+
+                        {# Actions et statistiques #}
+                        <div class="card-actions mt-auto">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ path('post_detail', {"post": post.getId()}) }}" class="btn btn-sm btn-salmon read-more-btn">
+                                    <i class="fi fi-rs-comment-dots"></i> Lire la suite
+                                </a>
+                                <div class="stats">
+                                    <span class="stat-item" data-tooltip="J'aime">
+                                        <i class="fi fi-rs-feedback-review"></i> {{ post.getLikes() | length }}
+                                    </span>
+                                    <span class="stat-item" data-tooltip="Commentaires">
+                                        <i class="fi fi-rs-comment-dots"></i> {{ post.getComments() | length }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Actions administrateur #}
+                    {% if app.user and app.user.getRole() == "admin" %}
+                        <div class="card-footer bg-light admin-footer">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <a href="{{ path('post_edit', {"post": post.getId()}) }}" class="btn btn-sm btn-orange admin-btn">
+                                    <i class="fi fi-rs-pen-nib"></i> <span>Éditer</span>
+                                </a>
+                                <a href="{{ path('post_delete', {"post": post.getId()}) }}"
+                                   class="btn btn-sm btn-danger admin-btn"
+                                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?');">
+                                    <i class="fi fi-rs-trash-xmark"></i> <span>Supprimer</span>
+                                </a>
+                                {% if not post.isOnLine %}
+                                    <a href="{{ path('post_publish', {"post": post.getId()}) }}" class="btn btn-sm btn-success admin-btn ms-auto">
+                                        <i class="fi fi-rs-file-export"></i> <span>Publier</span>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Clearfix pour éviter les problèmes d'alignement #}
+            {% if loop.index % 2 == 0 %}
+                <div class="clearfix d-md-block d-lg-none"></div>
+            {% endif %}
+            {% if loop.index % 4 == 0 %}
+                <div class="clearfix d-none d-lg-block"></div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {# Boutons administrateur #}
+    {% if app.user and app.user.getRole() == "admin" %}
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <div class="d-inline-flex gap-2 flex-wrap justify-content-center">
+                    <a href="{{ path('post_create') }}" class="btn btn-success">
+                        <i class="fi fi-rs-book-plus"></i> Ajouter un article
+                    </a>
+                    <a href="{{ path('posts_unpublished') }}" class="btn btn-success">
+                        <i class="fi fi-rs-document-signed"></i> Voir mes brouillons
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Section des recettes populaires (décommentée et améliorée) #}
+    {% if recipes is defined and recipes|length > 0 %}
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="mb-4">
+                    <i class="fi fi-rs-ranking-stars"></i> Mes recettes populaires
+                </h3>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% for recipe in recipes %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="row g-0">
+                            <div class="col-4">
+                                <a href="{{ path('post_detail', { "post": recipe.id}) }}">
+                                    {% if recipe.getImage() is not null %}
+                                        <img src="{{ asset(recipe.image) }}"
+                                             class="img-fluid rounded-start h-100"
+                                             style="object-fit: cover;"
+                                             alt="{{ recipe.title }}">
+                                    {% else %}
+                                        <img src="/img/post-image-sample.png"
+                                             class="img-fluid rounded-start h-100"
+                                             style="object-fit: cover;"
+                                             alt="Image par défaut">
+                                    {% endif %}
+                                </a>
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ recipe.title }}</h5>
+                                    <div class="rating">
+                                        <p class="mb-1">
+                                            <small>Note moyenne :</small>
+                                        </p>
+                                        <div class="stars">
+                                            {% set note = recipe.averageRating|round(0, 'floor') %}
+                                            {% for i in 1..5 %}
+                                                {% if i <= note %}
+                                                    <i class="fa fa-star text-warning"></i>
+                                                {% else %}
+                                                    <i class="fa fa-star text-muted"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="text-muted">{{ recipe.ratingCount }} vote{{ recipe.ratingCount > 1 ? 's' : '' }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}

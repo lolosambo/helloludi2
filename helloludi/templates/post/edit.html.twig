@@ -1,0 +1,896 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css"
+          rel="stylesheet">
+    <style>
+        /* Styles pour moderniser le formulaire */
+        .form-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #ffe66d, #a8e6cf, #c7ceea);
+            animation: gradientSlide 5s ease infinite;
+        }
+
+        @keyframes gradientSlide {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .form-header h2 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-header h2::after {
+            content: '✨';
+            position: absolute;
+            right: -40px;
+            top: 0;
+            font-size: 1.5rem;
+            animation: sparkle 2s ease infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.5; transform: scale(1.2) rotate(180deg); }
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        /* Groupes de formulaire */
+        .form-group {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .form-group:hover {
+            border-color: #e9ecef;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group.focused {
+            border-color: #4ecdc4;
+            background: #f0fffe;
+        }
+
+        /* Labels modernes */
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .form-label i {
+            color: #6c757d;
+            font-size: 1.2rem;
+        }
+
+        /* Inputs et textareas */
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+            transform: translateY(-1px);
+        }
+
+        /* Select personnalisé */
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c757d' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        /* Éditeur riche */
+        .rich-editor-container {
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .rich-editor-container:hover {
+            border-color: #dee2e6;
+        }
+
+        .rich-editor-container.focused {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 0 0.2rem rgba(78, 205, 196, 0.25);
+        }
+
+        .editor-content {
+            min-height: 400px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Upload d'image */
+        .image-upload-wrapper {
+            position: relative;
+        }
+
+        .main-file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .main-upload-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 2rem;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .main-upload-button:hover {
+            border-color: #4ecdc4;
+            background: #f0fffe;
+            transform: translateY(-2px);
+        }
+
+        .main-upload-button i {
+            font-size: 2rem;
+            color: #6c757d;
+        }
+
+        .upload-text {
+            color: #6c757d;
+        }
+
+        /* Sections conditionnelles */
+        .conditional-section {
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Boutons */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-salmon {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+        }
+
+        .btn-salmon:hover {
+            background: #ff5252;
+            color: white;
+        }
+
+        .btn-orange {
+            background: #ff8e53;
+            color: white;
+            border: none;
+        }
+
+        .btn-orange:hover {
+            background: #ff7043;
+            color: white;
+        }
+
+        /* Messages flash */
+        .alert {
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            border: none;
+            animation: slideInDown 0.3s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Tags de catégorie */
+        .category-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .category-tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+
+        .category-tag.recipe {
+            background: #ffe8e8;
+            color: #ff6b6b;
+        }
+
+        .category-tag.photo {
+            background: #e8f9f7;
+            color: #4ecdc4;
+        }
+
+        .category-tag.event {
+            background: #fff7e1;
+            color: #ffa500;
+        }
+
+        .category-tag.blabla {
+            background: #eef9f3;
+            color: #6bc490;
+        }
+
+        .category-tag.whoAmI {
+            background: #f0f2f9;
+            color: #7b88b3;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .form-header h2 {
+                font-size: 2rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Tooltips */
+        [data-tooltip] {
+            position: relative;
+        }
+
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(5px);
+            background: #333;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-5px);
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Éditer un article</h2>
+            <p class="form-subtitle">Modifiez votre article et partagez votre créativité</p>
+        </div>
+
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data', 'id': 'postForm' } }) }}
+
+        {# Titre #}
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fi fi-rs-pen-nib"></i>
+                {{ form_label(form.title) }}
+            </label>
+            {{ form_widget(form.title, {'attr': {'class': 'form-control', 'placeholder': 'Un titre accrocheur pour votre article...'}}) }}
+            {{ form_errors(form.title) }}
+        </div>
+
+        {# Catégorie #}
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fi fi-rs-apps"></i>
+                {{ form_label(form.category) }}
+            </label>
+            {{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.category) }}
+            <div class="category-tags mt-2">
+                <span class="category-tag recipe" data-tooltip="Pour vos délicieuses recettes">🍳 Recette</span>
+                <span class="category-tag photo" data-tooltip="Pour vos plus belles photos">📸 Photo</span>
+                <span class="category-tag event" data-tooltip="Pour vos événements">🎉 Événement</span>
+                <span class="category-tag blabla" data-tooltip="Pour discuter">💬 Blabla</span>
+                <span class="category-tag whoAmI" data-tooltip="Pour vous présenter">👤 Qui suis-je ?</span>
+            </div>
+        </div>
+
+        {# Contenu #}
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fi fi-rs-document"></i>
+                {{ form_label(form.content) }}
+            </label>
+            <div class="rich-editor-container" id="richEditor">
+                {% include 'components/_editor_toolbar.html.twig' %}
+                <div class="editor-content" contenteditable="true" id="editorContent">
+                    {% if form.content.vars.value %}
+                        {{ form.content.vars.value | raw }}
+                    {% else %}
+                        <p>Commencez à taper votre contenu ici...</p>
+                    {% endif %}
+                </div>
+            </div>
+            {{ form_widget(form.content, {'attr': {'style': 'display: none;', 'id': 'hiddenContent'}}) }}
+            {{ form_errors(form.content) }}
+        </div>
+
+        {# Champs conditionnels pour les événements #}
+        <div class="conditional-section date-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fi fi-rs-calendar"></i>
+                    {{ form_label(form.date) }}
+                </label>
+                {{ form_widget(form.date, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.date) }}
+            </div>
+        </div>
+
+        <div class="conditional-section place-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fi fi-rs-marker"></i>
+                    {{ form_label(form.place) }}
+                </label>
+                {{ form_widget(form.place, {'attr': {'class': 'form-control', 'placeholder': 'Où se déroule votre événement ?'}}) }}
+                {{ form_errors(form.place) }}
+            </div>
+        </div>
+
+        {# Champs conditionnels pour les recettes #}
+        <div class="conditional-section personsNumber-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fi fi-rs-users"></i>
+                    {{ form_label(form.personsNumber) }}
+                </label>
+                {{ form_widget(form.personsNumber, {'attr': {'class': 'form-control', 'placeholder': 'Pour combien de gourmands ?'}}) }}
+                {{ form_errors(form.personsNumber) }}
+            </div>
+        </div>
+
+        <div class="conditional-section cookingTime-wrapper" style="display: none;">
+            <div class="form-group">
+                <label class="form-label">
+                    <i class="fi fi-rs-clock"></i>
+                    {{ form_label(form.cookingTime) }}
+                </label>
+                {{ form_widget(form.cookingTime, {'attr': {'class': 'form-control', 'placeholder': 'Temps en minutes'}}) }}
+                {{ form_errors(form.cookingTime) }}
+            </div>
+        </div>
+
+        {# Image #}
+        <div class="form-group">
+            <label class="form-label">
+                <i class="fi fi-rs-image"></i>
+                {{ form_label(form.image) }}
+            </label>
+            <div class="image-upload-wrapper">
+                {{ form_widget(form.image, {'attr': {'class': 'main-file-input'}}) }}
+                <div class="main-upload-button">
+                    <div>
+                        <i class="fi fi-rs-cloud-upload"></i>
+                        <p class="upload-text">Cliquez ou glissez votre image ici</p>
+                        <small class="text-muted">JPG, PNG ou GIF - Max 5MB</small>
+                    </div>
+                </div>
+            </div>
+            {{ form_errors(form.image) }}
+        </div>
+
+        {# Actions #}
+        <div class="form-actions">
+            <a href="{{ path("homepage") }}" class="btn btn-salmon">
+                <i class="fi fi-rs-arrow-alt-circle-left"></i>
+                Retour aux articles
+            </a>
+            <button type="submit" class="btn btn-orange">
+                <i class="fi fi-rs-check"></i>
+                Enregistrer les modifications
+            </button>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+    {# Modals pour l'éditeur #}
+    {% include 'components/_editor_modals.html.twig' %}
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animation focus sur les form-groups
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach(group => {
+                const input = group.querySelector('.form-control, .editor-content');
+                if (input) {
+                    input.addEventListener('focus', () => {
+                        group.classList.add('focused');
+                    });
+                    input.addEventListener('blur', () => {
+                        group.classList.remove('focused');
+                    });
+                }
+            });
+
+            // Gestion du focus sur l'éditeur
+            const editorContainer = document.querySelector('.rich-editor-container');
+            const editorContent = document.querySelector('.editor-content');
+            if (editorContent && editorContainer) {
+                editorContent.addEventListener('focus', () => {
+                    editorContainer.classList.add('focused');
+                });
+                editorContent.addEventListener('blur', () => {
+                    editorContainer.classList.remove('focused');
+                });
+            }
+
+            // Click sur les tags de catégorie
+            const categoryTags = document.querySelectorAll('.category-tag');
+            const categorySelect = document.querySelector('select[name="post[category]"]');
+
+            categoryTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const categoryClass = tag.classList[1]; // recipe, photo, etc.
+                    if (categorySelect) {
+                        categorySelect.value = categoryClass;
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+
+            // SECTION CORRIGÉE - Upload d'image SEULEMENT pour le formulaire principal
+            const mainImageInput = document.querySelector('input[name="post[image]"]');
+            const mainUploadButton = document.querySelector('.main-upload-button');
+
+            if (mainImageInput && mainUploadButton) {
+                mainUploadButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainImageInput.click();
+                });
+
+                mainImageInput.addEventListener('change', (e) => {
+                    const fileName = e.target.files[0]?.name;
+                    if (fileName) {
+                        const uploadText = mainUploadButton.querySelector('.upload-text');
+                        if (uploadText) {
+                            uploadText.textContent = `📄 ${fileName}`;
+                            mainUploadButton.style.borderColor = '#4ecdc4';
+                            mainUploadButton.style.background = '#f0fffe';
+                        }
+                    }
+                });
+
+                // Drag and drop SEULEMENT sur le bouton principal
+                mainUploadButton.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainUploadButton.style.borderColor = '#4ecdc4';
+                    mainUploadButton.style.background = '#f0fffe';
+                });
+
+                mainUploadButton.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainUploadButton.style.borderColor = '#dee2e6';
+                    mainUploadButton.style.background = '#f8f9fa';
+                });
+
+                mainUploadButton.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files.length) {
+                        mainImageInput.files = e.dataTransfer.files;
+                        mainImageInput.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            // Gestion des champs conditionnels existante
+            const categoryField = document.querySelector('select[name="post[category]"]');
+            const dateFieldWrapper = document.querySelector('.date-wrapper');
+            const placeFieldWrapper = document.querySelector('.place-wrapper');
+            const personsNumberFieldWrapper = document.querySelector('.personsNumber-wrapper');
+            const cookingTimeFieldWrapper = document.querySelector('.cookingTime-wrapper');
+
+            if (categoryField) {
+                const toggleFields = () => {
+                    if (categoryField.value === 'event') {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'block';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'block';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'none';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'none';
+                    } else if (categoryField.value === 'recipe') {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'none';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'none';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'block';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'block';
+                    } else {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'none';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'none';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'none';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'none';
+
+                        const dateInput = dateFieldWrapper?.querySelector('input');
+                        const placeInput = placeFieldWrapper?.querySelector('input');
+                        const personsNumberInput = personsNumberFieldWrapper?.querySelector('input');
+                        const cookingTimeInput = cookingTimeFieldWrapper?.querySelector('input');
+                        if (dateInput) dateInput.value = '';
+                        if (placeInput) placeInput.value = '';
+                        if (personsNumberInput) personsNumberInput.value = '';
+                        if (cookingTimeInput) cookingTimeInput.value = '';
+                    }
+                };
+
+                categoryField.addEventListener('change', toggleFields);
+                toggleFields();
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/RichEditor.js') }}"></script>
+    <script>
+        let editorInstance = null;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let editorInstance = null;
+
+            // ===== INITIALISATION DE L'ÉDITEUR =====
+            const hiddenField = document.querySelector('textarea[name="post[content]"]');
+            editorInstance = new RichEditor('richEditor', {
+                hiddenFieldId: hiddenField ? hiddenField.id : 'post_content',
+                uploadUrl: '{{ path('upload_image') }}'
+            });
+
+            // Si on est en mode édition et qu'il y a du contenu existant
+            {% if form.content.vars.value %}
+            editorInstance.updateHiddenField();
+            {% endif %}
+
+            // ===== CONFIGURATION DES BOUTONS MODALES (SANS DOUBLONS) =====
+            // IMPORTANT: Ces event listeners ne doivent être configurés QU'UNE SEULE FOIS
+            const insertTableBtn = document.getElementById('insertTable');
+            const insertVideoBtn = document.getElementById('insertVideo');
+            const insertImageBtn = document.getElementById('insertImage');
+            const insertLinkBtn = document.getElementById('insertLink');
+
+            // Vérifier qu'ils n'ont pas déjà d'event listeners
+            if (insertTableBtn && !insertTableBtn.dataset.listenerAdded) {
+                insertTableBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Insert table clicked');
+                    if (editorInstance) {
+                        editorInstance.insertTable();
+                    }
+                });
+                insertTableBtn.dataset.listenerAdded = 'true';
+            }
+
+            if (insertVideoBtn && !insertVideoBtn.dataset.listenerAdded) {
+                insertVideoBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Insert video clicked');
+                    if (editorInstance) {
+                        editorInstance.insertVideo();
+                    }
+                });
+                insertVideoBtn.dataset.listenerAdded = 'true';
+            }
+
+            if (insertImageBtn && !insertImageBtn.dataset.listenerAdded) {
+                insertImageBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Insert image clicked');
+                    if (editorInstance) {
+                        editorInstance.insertImage();
+                    }
+                });
+                insertImageBtn.dataset.listenerAdded = 'true';
+            }
+
+            if (insertLinkBtn && !insertLinkBtn.dataset.listenerAdded) {
+                insertLinkBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('Insert link clicked');
+                    if (editorInstance) {
+                        editorInstance.insertLink();
+                    }
+                });
+                insertLinkBtn.dataset.listenerAdded = 'true';
+            }
+
+            // ===== VALIDATION AVANT SOUMISSION =====
+            document.getElementById('postForm').addEventListener('submit', function (e) {
+                const editorContent = document.getElementById('editorContent');
+                const hiddenField = document.getElementById('hiddenContent');
+
+                if (editorContent && hiddenField) {
+                    hiddenField.value = editorContent.innerHTML;
+                    console.log('Content forcé dans le champ caché:', hiddenField.value);
+                }
+
+                const textContent = editorContent ? editorContent.textContent.trim() : '';
+
+                if (!textContent || textContent.length < 10) {
+                    e.preventDefault();
+                    alert('Le contenu de l\'article doit faire au moins 10 caractères.');
+                    if (editorContent) editorContent.focus();
+                    return false;
+                }
+
+                return true;
+            });
+
+            // ===== GESTION DES FORM-GROUPS (FOCUS/BLUR) =====
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach(group => {
+                const input = group.querySelector('.form-control, .editor-content');
+                if (input) {
+                    input.addEventListener('focus', () => {
+                        group.classList.add('focused');
+                    });
+                    input.addEventListener('blur', () => {
+                        group.classList.remove('focused');
+                    });
+                }
+            });
+
+            // ===== GESTION DU FOCUS SUR L'ÉDITEUR =====
+            const editorContainer = document.querySelector('.rich-editor-container');
+            const editorContent = document.querySelector('.editor-content');
+            if (editorContent && editorContainer) {
+                editorContent.addEventListener('focus', () => {
+                    editorContainer.classList.add('focused');
+                });
+                editorContent.addEventListener('blur', () => {
+                    editorContainer.classList.remove('focused');
+                });
+            }
+
+            // ===== GESTION DES TAGS DE CATÉGORIE =====
+            const categoryTags = document.querySelectorAll('.category-tag');
+            const categorySelect = document.querySelector('select[name="post[category]"]');
+
+            categoryTags.forEach(tag => {
+                tag.addEventListener('click', () => {
+                    const categoryClass = tag.classList[1]; // recipe, photo, etc.
+                    if (categorySelect) {
+                        categorySelect.value = categoryClass;
+                        categorySelect.dispatchEvent(new Event('change'));
+                    }
+                });
+            });
+
+            // ===== UPLOAD D'IMAGE PRINCIPAL (FORMULAIRE) =====
+            const mainImageInput = document.querySelector('input[name="post[image]"]');
+            const mainUploadButton = document.querySelector('.main-upload-button');
+
+            if (mainImageInput && mainUploadButton) {
+                mainUploadButton.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainImageInput.click();
+                });
+
+                mainImageInput.addEventListener('change', (e) => {
+                    const fileName = e.target.files[0]?.name;
+                    if (fileName) {
+                        const uploadText = mainUploadButton.querySelector('.upload-text');
+                        if (uploadText) {
+                            uploadText.textContent = `📄 ${fileName}`;
+                            mainUploadButton.style.borderColor = '#4ecdc4';
+                            mainUploadButton.style.background = '#f0fffe';
+                        }
+                    }
+                });
+
+                // Drag and drop
+                mainUploadButton.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainUploadButton.style.borderColor = '#4ecdc4';
+                    mainUploadButton.style.background = '#f0fffe';
+                });
+
+                mainUploadButton.addEventListener('dragleave', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    mainUploadButton.style.borderColor = '#dee2e6';
+                    mainUploadButton.style.background = '#f8f9fa';
+                });
+
+                mainUploadButton.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (e.dataTransfer.files.length) {
+                        mainImageInput.files = e.dataTransfer.files;
+                        mainImageInput.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            // ===== GESTION DES CHAMPS CONDITIONNELS =====
+            const categoryField = document.querySelector('select[name="post[category]"]');
+            const dateFieldWrapper = document.querySelector('.date-wrapper');
+            const placeFieldWrapper = document.querySelector('.place-wrapper');
+            const personsNumberFieldWrapper = document.querySelector('.personsNumber-wrapper');
+            const cookingTimeFieldWrapper = document.querySelector('.cookingTime-wrapper');
+
+            if (categoryField) {
+                const toggleFields = () => {
+                    if (categoryField.value === 'event') {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'block';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'block';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'none';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'none';
+                    } else if (categoryField.value === 'recipe') {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'none';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'none';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'block';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'block';
+                    } else {
+                        if (dateFieldWrapper) dateFieldWrapper.style.display = 'none';
+                        if (placeFieldWrapper) placeFieldWrapper.style.display = 'none';
+                        if (personsNumberFieldWrapper) personsNumberFieldWrapper.style.display = 'none';
+                        if (cookingTimeFieldWrapper) cookingTimeFieldWrapper.style.display = 'none';
+
+                        const dateInput = dateFieldWrapper?.querySelector('input');
+                        const placeInput = placeFieldWrapper?.querySelector('input');
+                        const personsNumberInput = personsNumberFieldWrapper?.querySelector('input');
+                        const cookingTimeInput = cookingTimeFieldWrapper?.querySelector('input');
+                        if (dateInput) dateInput.value = '';
+                        if (placeInput) placeInput.value = '';
+                        if (personsNumberInput) personsNumberInput.value = '';
+                        if (cookingTimeInput) cookingTimeInput.value = '';
+                    }
+                };
+
+                categoryField.addEventListener('change', toggleFields);
+                toggleFields(); // Appel initial
+            }
+        });
+    </script>
+{% endblock %}

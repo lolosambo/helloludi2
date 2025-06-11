@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: php-app
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8082:80"
+    depends_on:
+      - db
+    environment:
+      SYMFONY_ENV: dev
+    networks:
+      - phpmyadmin-net
+
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1977sram01
+      MYSQL_DATABASE: helloludi
+      MYSQL_USER: laurentb
+      MYSQL_PASSWORD: 1977sram01
+    ports:
+      - "3307:3306"
+    networks:
+      - phpmyadmin-net
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: 1977sram01
+    ports:
+      - "8083:80"
+    networks:
+      - phpmyadmin-net
+    depends_on:
+      - db
+
+networks:
+  phpmyadmin-net:
+    driver: bridge
+
+volumes:
+  db_data:

@@ -1,0 +1,9 @@
+{% if app.request.cookies.get('accept_cookies') is null %}
+    <div class="cookie-banner">
+        <p>Ce site utilise des cookies pour améliorer votre expérience. Acceptez-vous les cookies ?</p>
+        <form method="post" action="{{ path("cookie_banner") }}" class="cookie-form">
+            <button type="submit" name="accept_cookies" value="yes" class="btn-accept">Accepter</button>
+            <button type="submit" name="accept_cookies" value="no" class="btn-decline">Refuser</button>
+        </form>
+    </div>
+{% endif %}

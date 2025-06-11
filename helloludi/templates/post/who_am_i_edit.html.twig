@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h2>"Qui suis-je ?" - Edition</h2>
+
+    {{ form_start(form, { 'attr': { 'enctype': 'multipart/form-data' } }) }}
+
+    <div class="blog-form-element-wrapper">
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages {{ type }}">
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="m-2">{{ app.flashes('success') | join('<br>') | raw }}</div>
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.content) }}
+            </div>
+            <div class="col-sm-12 col-md-8 form-editor">
+                {{ form_widget(form.content | raw) }}
+                {{ form_errors(form.content) }}
+            </div>
+        </div>
+        {% if app.user and app.user.getRole() == "admin" %}
+            <button type="submit" class="btn btn-salmon">Valider</button>
+        {% endif %}
+    </div>
+    {{ form_end(form) }}
+
+    <script>
+        new FroalaEditor('.froala', {
+            // Options d'initialisation ici
+            toolbarInline: true,
+            language: 'fr',
+            placeholderText: 'Écrivez votre contenu ici...',
+            imageUploadURL: '/upload_image',
+            imageUploadParams: { id: 'my_editor' },
+            imageMaxSize: 5 * 1024 * 1024,
+            imageAllowedTypes: ['jpeg', 'jpg', 'png', 'gif', 'bmp'],
+            pastePlain: true,
+            htmlRemoveTags: ['is_pasted'],
+            htmlAllowedAttrs: ['class', 'id', 'style'],
+            htmlAllowedEmptyTags: ['i', 'span'],
+        });
+    </script>
+{% endblock %}
+

@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="blog-form-element-wrapper">
+        {% if  whoAmIPost is not null %}
+            <h4>{{ whoAmIPost.getTitle() }}</h4><br>
+            <p>{{ whoAmIPost.getContent()| raw }}</p>
+        {% endif %}
+
+        {% if app.user and app.user.getRole() == "admin" %}
+            <a href="{{ path('who_am_i_edit') }}" class="btn btn-salmon">Editer</a>
+        {% endif %}
+    </div>
+
+{% endblock %}

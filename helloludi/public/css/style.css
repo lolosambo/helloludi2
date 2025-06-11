@@ -1,0 +1,807 @@
+html, body {
+	height: 100%;
+}
+
+body {
+	background-color: #403325;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+h1 {
+	color: white;
+	font-family: "Delius Swash Caps", serif;
+	font-size:  4em;
+  	font-weight: 400;
+  	font-style: normal;
+}
+
+h2 {
+	color: white;
+	font-family: "Delius Swash Caps", serif;
+	font-size:  2em;
+  	font-weight: 400;
+  	font-style: normal;
+}
+
+h3 {
+	color: white;
+	font-family: "Delius Swash Caps", serif;
+	font-size:  1.5em;
+  	font-weight: 400;
+  	font-style: normal;
+  	padding-left:  300px;
+}
+
+h4 {
+	color: #6a1a21;
+	font-family: "Delius Swash Caps", serif;
+	font-size:  1.3em;
+	font-weight: 400;
+	font-style: normal;
+}
+
+h5 {
+	color: #6a1a21;
+	font-family: "Delius Swash Caps", serif;
+	font-size:  1em;
+	font-weight: 400;
+	font-style: normal;
+}
+
+ul li a {
+	color: #452900;
+}
+
+.btn-salmon{
+	background-color: #9b6256;
+	color: white;
+	margin: 5px;
+}
+
+.btn-salmon:hover{
+	background-color: #9b6256;
+	color: rgba(42, 1, 94, 0.74);
+}
+
+.btn-orange{
+	background-color: #f78000;
+	color: rgb(63, 30, 1);
+	margin: 5px;
+}
+
+.btn-orange:hover{
+	background-color: #BD4600FF;
+	color: white;
+}
+
+.btn-purple{
+	background-color: #7E001DFF;
+	color: rgb(255, 255, 255);
+	margin: 5px;
+}
+
+.btn-purple:hover{
+	background-color: #260014 ;
+	color: white;
+}
+
+.delius-swash-caps-regular {
+  font-family: "Delius Swash Caps", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.blog-title {
+	padding-top:  20px;
+	text-align: center;
+}
+
+.blog-header {
+	min-height: 50px;
+	/*background-image: url("../img/header.jpg");*/
+	/*background-size: auto;*/
+	width:  100%;
+	margin-bottom: 20px;
+}
+
+.menu-header {
+	background-color: #734935;
+	min-height: 55px;
+	color: white;
+	margin-bottom: 0;
+}
+
+.menu-header a {
+	color: white;
+}
+
+.welcome-user{
+	background-color: #e5c7ca;
+	color: #6a1a21;
+	height: 40px;
+	border-bottom-left-radius: 10px;
+	border-top-left-radius: 10px;
+}
+
+/*----------------------------------------------------*/
+
+.navbar {
+	background-color: #734935;
+	border-bottom: 2px solid #281801;
+}
+
+.navbar .navbar-toggler {
+	border: none;
+}
+
+.navbar .navbar-toggler-icon {
+	background-image: url("data:image/svg+xml;charset=UTF8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Cpath stroke='white' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+	width: 24px;
+	height: 24px;
+}
+
+/* Lien du menu */
+.navbar-nav .nav-link {
+	font-size: 16px;
+	font-weight: 500;
+	color: #ffffff;
+	padding: 8px 15px;
+	transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+	color: #ff5722;
+}
+
+/* Icônes */
+.navbar-nav .nav-link i {
+	margin-right: 8px;
+	color: #ffffff;
+	transition: color 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover i {
+	color: #ff5722;
+}
+
+/* Boutons utilisateur */
+.navbar .btn-orange {
+	background-color: #ff5722;
+	color: white;
+	border: none;
+	margin-left: 10px;
+	transition: background-color 0.3s ease-in-out;
+}
+
+.navbar .btn-orange:hover {
+	background-color: #e64a19;
+}
+
+.navbar .btn-purple {
+	background-color: #6a1a21;
+	color: white;
+	border: none;
+	margin-left: 10px;
+	transition: background-color 0.3s ease-in-out;
+}
+
+.navbar .btn-purple:hover {
+	background-color: #440a0f;
+}
+
+/* Barre de recherche */
+.navbar .form-control {
+	border: 1px solid #ddd;
+	border-radius: 5px;
+
+}
+
+.navbar .btn-outline-secondary {
+	color: #555;
+	border-color: #ddd;
+	background-color: white;
+}
+
+.navbar .btn-outline-secondary:hover {
+	color: #ff5722;
+	border-color: #ff5722;
+}
+
+/* Off-canvas styles */
+.offcanvas {
+	background-color: #734935;
+	width: 250px;
+}
+
+.offcanvas .nav-link {
+	font-size: 16px;
+	font-weight: 500;
+	color: #ffffff;
+	padding: 10px;
+	transition: color 0.3s ease-in-out;
+}
+
+.offcanvas .nav-link:hover {
+	color: #ff5722;
+}
+
+
+.navbar-nav .nav-link i {
+	margin-right: 8px;
+	color: #ff5722;
+}
+
+
+@media (min-width: 992px) {
+	.navbar-collapse {
+		display: block !important;
+	}
+
+	.offcanvas {
+		display: none;
+	}
+}
+
+
+@media (max-width: 991.98px) {
+	.navbar-nav {
+		text-align: center;
+	}
+	.navbar-nav .nav-item {
+		margin: 5px 0;
+	}
+	.navbar .btn-orange, .navbar .btn-purple {
+		margin: 10px 0;
+		width: 100%;
+	}
+	.navbar .form-control {
+		margin-top: 10px;
+		width: 100%;
+	}
+}
+/*-----------------------------------------------------*/
+
+.blog-navigation-wrapper{
+	color: white;
+	height: 55px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+. main {
+	flex: 1; /* Occupe l'espace restant */
+}
+
+.blog-menu-left{
+	background-color: #eca952;
+	height:  1000px;
+	margin-left: 0px;
+}
+
+.card{
+	width: 96%;
+	margin: 10px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.card .ribbon {
+	position: absolute;
+	text-align: center;
+	width: 25%;
+	height: 20px;
+	top: 0px; /* Ajustez la position */
+	right: 0px; /* Ajustez pour placer correctement le bandeau */
+	background-color: #ff3cf1; /* Couleur par défaut du bandeau */
+	color: #050505;
+	padding: 2px;
+	border-top-right-radius: 3px;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
+	z-index: 10;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	overflow: hidden;
+}
+
+.card .ribbon.event {
+	background-color: #007bff;
+}
+
+.card .ribbon.photo {
+	background-color: #28a745;
+}
+
+.card .ribbon.recipe {
+	background-color: #ffc107;
+}
+
+.card .ribbon.blabla {
+	background-color: #ff7e7e;
+}
+
+.card-body{
+	flex-grow: 1;
+	background-color: #ffdbb8;
+	text-align: justify;
+	text-align-last: left;
+	word-spacing: 0.1em;
+	hyphens: auto;
+	font-weight: normal !important;
+	font-style: normal !important;
+}
+
+.card-footer{
+	background-color: #330000;
+}
+
+.blog-form-element-wrapper{
+	margin: auto;
+	padding: 20px;
+	width: 80%;
+	background-color: #d0bea6;
+}
+
+.form-editor {
+	background-color: whitesmoke;
+	border: solid 1px #c4c4c4;
+	border-radius: 10px;
+}
+
+.bubble {
+	background-color: #f5f5f5;
+	border-radius: 25px;
+	position: relative;
+	padding: 15px;
+}
+.bubble:after {
+	content: '';
+	position: absolute;
+	top: 20px; /* Alignement avec le pseudo */
+	left: -13px; /* Pointe à gauche */
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 10px 15px 10px 0;
+	border-color: transparent #f5f5f5 transparent transparent;
+}
+
+.bubble-reply {
+	background-color: #e0e0e0;
+	border-radius: 25px;
+	position: relative;
+	padding: 15px;
+}
+.bubble-reply:after {
+	content: '';
+	position: absolute;
+	top: 17px; /* Alignement avec le pseudo */
+	left: -13px; /* Pointe à gauche */
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 10px 15px 10px 0;
+	border-color: transparent #e0e0e0 transparent transparent;
+}
+
+.star-rating {
+	display: inline-flex;
+	direction: ltr;
+	font-size: 2rem;
+	color: #ccc; /* Couleur des étoiles non sélectionnées */
+	cursor: pointer;
+}
+
+.star-rating .fa-star {
+	transition: color 0.2s;
+	cursor: pointer;
+	color: gray;
+}
+
+.fa-star.selected {
+	color: #ffcc00; /* Couleur de l'étoile sélectionnée */
+}
+
+.star-rating .fa-star.hover {
+	color: #ffcc00; /* Couleur des étoiles au survol */
+}
+
+.rating-message {
+	margin-top: 10px;
+	font-size: 1rem;
+	color: #555;
+}
+
+
+.fr-popup {
+	z-index: 8800 !important;
+}
+
+.modal {
+	z-index: 8000 !important;
+}
+
+.mostRatedrecipes-wrapper {
+	margin: 10px;
+	padding: 20px;
+	background-color: #d0bea6;
+}
+
+.mostRatedrecipes-wrapper .recipe_wrapper {
+	margin-bottom: 20px;
+}
+
+.blog-footer {
+	height:  200px;
+	background-color: green;
+}
+
+.footer-part {
+	background-color: darkgrey;
+	padding: 5px;
+	border-right: #ab5900 solid 1px;
+}
+
+.footer-part a {
+	text-decoration: none;
+}
+
+#agenda-footer {
+	background-color: #f9f9f9;
+	padding: 10px;
+	border-top: 1px solid #ccc;
+}
+#agenda-footer h4 {
+	margin-bottom: 10px;
+}
+#agenda-footer ul {
+	list-style: none;
+	padding: 0;
+}
+#agenda-footer li {
+	margin: 5px 0;
+}
+
+.cookie-banner {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: #192c8c;
+	padding: 15px;
+	text-align: center;
+	box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+	z-index: 9999;
+}
+
+.cookie-form {
+	display: inline-flex;
+	gap: 10px;
+}
+
+.btn-accept, .btn-decline {
+	padding: 10px 20px;
+	border: none;
+	cursor: pointer;
+}
+
+.btn-accept {
+	background-color: #28a745;
+	color: white;
+}
+
+.btn-decline {
+	background-color: #dc3545;
+	color: white;
+}
+
+/* Styles pour uniformiser les cartes */
+.post-card {
+	border: none;
+	border-radius: 20px;
+	overflow: hidden;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+	background: white;
+}
+
+.post-card:hover {
+	transform: translateY(-8px) scale(1.02);
+	box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Bordure colorée en haut selon la catégorie */
+.post-card.recipe::before,
+.post-card.photo::before,
+.post-card.event::before,
+.post-card.blabla::before,
+.post-card.whoAmI::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 4px;
+	z-index: 1;
+}
+
+.post-card.recipe::before { background: linear-gradient(90deg, #ff6b6b, #ff8e8e); }
+.post-card.photo::before { background: linear-gradient(90deg, #4ecdc4, #6ee7df); }
+.post-card.event::before { background: linear-gradient(90deg, #ffe66d, #ffed8e); }
+.post-card.blabla::before { background: linear-gradient(90deg, #a8e6cf, #c3f0df); }
+.post-card.whoAmI::before { background: linear-gradient(90deg, #c7ceea, #dde2f5); }
+
+/* Conteneur image avec overlay */
+.card-image-wrapper {
+	position: relative;
+	overflow: hidden;
+	height: 200px;
+}
+
+.card-img-top {
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.5s ease;
+}
+
+.post-card:hover .card-img-top {
+	transform: scale(1.1);
+}
+
+.card-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.7) 100%);
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	padding: 20px;
+}
+
+.post-card:hover .card-overlay {
+	opacity: 1;
+}
+
+.view-more {
+	color: white;
+	font-weight: 600;
+	font-size: 1rem;
+	transform: translateY(20px);
+	transition: transform 0.3s ease;
+}
+
+.post-card:hover .view-more {
+	transform: translateY(0);
+}
+
+/* Corps de la carte */
+.card-body {
+	padding: 1.5rem;
+	min-height: 280px;
+}
+
+.card-title {
+	font-size: 1.3rem;
+	margin-bottom: 1rem;
+	color: #2c3e50;
+	line-height: 1.4;
+}
+
+/* Pills d'information */
+.info-pills {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin-bottom: 1rem;
+}
+
+.info-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3rem;
+	padding: 0.25rem 0.75rem;
+	background: #f8f9fa;
+	border-radius: 20px;
+	font-size: 0.85rem;
+	color: #6c757d;
+	border: 1px solid #e9ecef;
+	transition: all 0.2s ease;
+}
+
+.info-pill i {
+	font-size: 0.9rem;
+}
+
+.info-pill:hover {
+	background: #e9ecef;
+	transform: translateY(-2px);
+}
+
+/* Texte de la carte */
+.card-text {
+	color: #6c757d;
+	line-height: 1.6;
+	font-size: 0.95rem;
+}
+
+/* Bouton lire la suite */
+.read-more-btn {
+	border-radius: 25px;
+	padding: 0.5rem 1.2rem;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.read-more-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Statistiques */
+.stats {
+	display: flex;
+	gap: 1rem;
+}
+
+.stat-item {
+	position: relative;
+	color: #6c757d;
+	font-size: 0.9rem;
+	transition: color 0.2s ease;
+	cursor: default;
+}
+
+.stat-item:hover {
+	color: #495057;
+}
+
+.stat-item::after {
+	content: attr(data-tooltip);
+	position: absolute;
+	bottom: 100%;
+	left: 50%;
+	transform: translateX(-50%) translateY(5px);
+	background: #333;
+	color: white;
+	padding: 0.25rem 0.5rem;
+	border-radius: 4px;
+	font-size: 0.75rem;
+	white-space: nowrap;
+	opacity: 0;
+	pointer-events: none;
+	transition: all 0.2s ease;
+}
+
+.stat-item:hover::after {
+	opacity: 1;
+	transform: translateX(-50%) translateY(-5px);
+}
+
+/* Conteneur pour le ruban */
+.ribbon-wrapper {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 100px;
+	height: 100px;
+	overflow: hidden;
+	z-index: 10;
+}
+
+.ribbon {
+	position: absolute;
+	top: 25px !important;
+	right: -25px !important;
+	padding: 5px 30px;
+	color: white;
+	font-size: 0.7rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	transform: rotate(45deg);
+	box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+	min-width: 120px;
+	text-align: center;
+}
+
+/* Couleurs des rubans avec gradients */
+.ribbon.recipe {
+	background: linear-gradient(135deg, #ff6b6b, #ff5252);
+}
+.ribbon.photo {
+	background: linear-gradient(135deg, #4ecdc4, #3bb8b0);
+}
+.ribbon.event {
+	background: linear-gradient(135deg, #ffe66d, #ffd93d);
+	color: #333;
+}
+.ribbon.blabla {
+	background: linear-gradient(135deg, #a8e6cf, #90d4b8);
+	color: #333;
+}
+.ribbon.whoAmI {
+	background: linear-gradient(135deg, #c7ceea, #b2bbdd);
+	color: #333;
+}
+
+/* Footer admin moderne */
+.admin-footer {
+	background: #f8f9fa !important;
+	border-top: 1px solid #e9ecef;
+	padding: 0.5rem;
+}
+
+.admin-btn {
+	border-radius: 20px;
+	padding: 0.3rem 0.8rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	transition: all 0.2s ease;
+	border: none;
+}
+
+.admin-btn span {
+	display: none;
+}
+
+.admin-btn:hover span {
+	display: inline;
+}
+
+.admin-btn:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Amélioration pour les recettes populaires */
+.rating .fa-star {
+	font-size: 0.9rem;
+	transition: transform 0.2s ease;
+}
+
+.rating:hover .fa-star {
+	transform: scale(1.1);
+}
+
+/* Animations d'entrée */
+@keyframes fadeInUp {
+	from {
+		opacity: 0;
+		transform: translateY(20px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.post-card {
+	animation: fadeInUp 0.6s ease-out;
+	animation-fill-mode: both;
+}
+
+.post-card:nth-child(1) { animation-delay: 0.1s; }
+.post-card:nth-child(2) { animation-delay: 0.2s; }
+.post-card:nth-child(3) { animation-delay: 0.3s; }
+.post-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 768px) {
+	.card-body {
+		min-height: auto;
+		padding: 1rem;
+	}
+
+	.admin-btn span {
+		display: inline;
+	}
+}

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié{% endblock %}
+
+{% block content %}
+    <h1>Mot de passe oublié</h1>
+    <div class="blog-form-element-wrapper">
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages {{ type }}">
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <form method="POST">
+            <div class="row">
+                <div class="col-sm-12 col-md-5 text-end">
+                    <label for="email">Votre e-mail</label>
+                </div>
+                <div class="col-sm-12 col-md-7 text-start">
+                    <input type="email" name="email" id="email" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <h2>Profile de {{ user.getpseudo() }}</h2>
+
+    {{ form_start(form) }}
+
+    <div class="blog-form-element-wrapper">
+        {% for type, messages in app.flashes %}
+            <div class="flash-messages {{ type }}">
+                {% for message in messages %}
+                    <div class="alert alert-{{ type }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.email) }}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="blog-form-element-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.name) }}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="blog-form-element-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.firstName) }}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.firstName, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.firstName) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="blog-form-element-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.theme) }}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.theme, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.theme) }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Modifier</button>
+    </div>
+
+    {{ form_end(form) }}
+
+{% endblock %}

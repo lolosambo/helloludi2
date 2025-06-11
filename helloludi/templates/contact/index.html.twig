@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contact{% endblock %}
+
+{% block content %}
+    <h2>Contactez-moi</h2>
+
+    {{ form_start(form) }}
+
+    <div class="blog-form-element-wrapper place-wrapper">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.name) }}*
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.name,{'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.name) }}
+            </div>
+        </div>
+    </div>
+    <div class="blog-form-element-wrapper place-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.firstName) }}*
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.firstName,{'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.firstName) }}
+            </div>
+        </div>
+    </div>
+    <div class="blog-form-element-wrapper place-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.city) }}
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.city,{'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.city) }}
+            </div>
+        </div>
+    </div>
+    <div class="blog-form-element-wrapper place-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.email) }}*
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.email,{'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.email) }}
+            </div>
+        </div>
+    </div>
+    <div class="blog-form-element-wrapper place-wrapper">
+        <div class="row">
+            <div class="col-sm-12 col-md-2">
+                {{ form_label(form.message) }}*
+            </div>
+            <div class="col-sm-12 col-md-8">
+                {{ form_widget(form.message,{'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.message) }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-salmon"><i class="fi fi-rs-paper-plane"></i> Envoyer le message</button>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
