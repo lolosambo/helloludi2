@@ -1,0 +1,14 @@
+.re-wrapper{border:1px solid #ccc;margin-bottom:1rem;font-family:'Poppins',sans-serif;}
+.re-toolbar{background:#f8f9fa;padding:4px;display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid #ccc;}
+.re-toolbar button,.re-toolbar select{padding:4px 6px;font-size:14px;border:1px solid #ccc;background:white;cursor:pointer;border-radius:4px;}
+.re-toolbar button:hover{background:#eee;}
+.re-area{min-height:250px;padding:8px;outline:none;}
+.re-element{position:relative;display:inline-block;}
+.re-element .re-edit{position:absolute;top:0;right:0;display:none;background:#fff;border:1px solid #ccc;font-size:12px;padding:2px;cursor:pointer;}
+.re-element:hover .re-edit{display:block;}
+.modal-re{display:none;position:fixed;z-index:1050;left:0;top:0;width:100%;height:100%;overflow:auto;background:rgba(0,0,0,.5);}
+.modal-re .re-content{background:#fff;margin:10% auto;padding:20px;border-radius:6px;max-width:350px;}
+.modal-re label{margin-top:10px;display:block;font-weight:bold;font-size:14px;}
+.modal-re input, .modal-re select{width:100%;padding:4px;margin-top:4px;font-size:14px;border:1px solid #ccc;border-radius:4px;}
+.modal-re .actions{text-align:right;margin-top:10px;}
+.modal-re .actions button{padding:4px 12px;margin-left:4px;border:1px solid #ccc;background:white;cursor:pointer;border-radius:4px;}

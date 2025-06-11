@@ -32,6 +32,7 @@
 
     {% block javascripts %}
         <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/rich-editor.js"></script>
     {% endblock %}
 </head>
 <body>
@@ -258,48 +259,6 @@
     </div>
 
 
-    <script>
-        // Fix pour les boutons qui ne répondent pas
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                // Réattacher manuellement les événements aux boutons
-                document.querySelectorAll('.editor-btn').forEach(btn => {
-                    btn.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        const editor = window.EditorAPI?.getInstance();
-                        if (!editor) return;
-
-                        const command = this.dataset.command;
-                        if (command) {
-                            console.log('Executing command:', command);
-                            editor.execCommand(command);
-                        } else {
-                            console.log('Special button clicked:', this.id);
-                            // Actions spéciales
-                            switch(this.id) {
-                                case 'linkBtn':
-                                    editor.showModal('link');
-                                    break;
-                                case 'imageBtn':
-                                    editor.showModal('image');
-                                    break;
-                                case 'quoteBtn':
-                                    editor.insertQuote();
-                                    break;
-                                case 'codeBtn':
-                                    editor.insertCode();
-                                    break;
-                            }
-                        }
-                    });
-                });
-
-                console.log('Manual event listeners attached');
-            }, 1000);
-        });
-    </script>
 {% endblock %}
 
 </body>
