@@ -35,6 +35,50 @@ class RichEditor {
 
         // Initialisation
         this.init();
+
+        const configButtonStyles = `
+            .media-wrapper {
+                position: relative;
+                display: inline-block;
+                margin: 10px;
+            }
+            
+            .media-config-btn {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 30px;
+                height: 30px;
+                cursor: pointer;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                z-index: 100;
+                transition: all 0.3s ease;
+            }
+            
+            .media-wrapper:hover .media-config-btn {
+                display: flex;
+            }
+            
+            .media-config-btn:hover {
+                background: rgba(0, 0, 0, 0.9);
+                transform: scale(1.1);
+            }
+            
+            .media-config-btn i {
+                font-size: 14px;
+            }
+        `;
+
+        // Ajoutez le style au document
+        const styleElement = document.createElement('style');
+        styleElement.textContent = configButtonStyles;
+        document.head.appendChild(styleElement);
     }
 
     /**
@@ -425,43 +469,96 @@ class RichEditor {
     /**
      * Insertion d'image
      */
-    async insertImage() {
-        if (this.isProcessing) return Promise.reject('Already processing');
+    insertImage() {
+        const modal = document.getElementById('imageModal');
+        const urlInput = document.getElementById('imageUrl');
+        const fileInput = document.getElementById('imageFile');
+        const altInput = document.getElementById('imageAlt');
+        const widthInput = document.getElementById('imageWidth');
+        const alignSelect = document.getElementById('imageAlign');
+        const captionInput = document.getElementById('imageCaption');
 
-        this.isProcessing = true;
-        console.log('Starting image insertion...');
+        const insertImageBtn = document.getElementById('insertImage');
 
-        try {
-            const imageFile = document.getElementById('imageFile');
-            const imageUrl = document.getElementById('imageUrl');
-            const imageAlt = document.getElementById('imageAlt');
+        // Stocker l'élément en cours d'édition
+        let editingImage = null;
 
-            const file = imageFile?.files[0];
-            const url = imageUrl?.value;
-            const alt = imageAlt?.value || '';
+        // Clone le bouton pour retirer les anciens listeners
+        const newInsertBtn = insertImageBtn.cloneNode(true);
+        insertImageBtn.parentNode.replaceChild(newInsertBtn, insertImageBtn);
 
-            let imageSrc = '';
+        newInsertBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+            const alt = altInput.value || 'Image';
+            const width = widthInput.value || 'auto';
+            const align = alignSelect.value;
+            const caption = captionInput.value;
 
-            if (file) {
-                imageSrc = await this.uploadImage(file);
-            } else if (url) {
-                imageSrc = url;
-            } else {
-                alert('Veuillez sélectionner un fichier ou saisir une URL');
-                return Promise.reject('No image source');
+            if (url) {
+                let imageHtml = '';
+                if (editingImage) {
+                    // Mode édition : remplacer l'image existante
+                    const wrapper = editingImage.closest('.media-wrapper');
+                    if (wrapper) {
+                        wrapper.remove();
+                    }
+                }
+
+                // Créer le nouveau HTML
+                imageHtml = `
+                <div class="media-wrapper image-wrapper" style="text-align: ${align};">
+                    <img src="${url}" alt="${alt}" style="width: ${width}; max-width: 100%;">
+                    <button class="media-config-btn" onclick="window.editorInstance.editImage(this)" title="Modifier l'image">
+                        <i class="fi fi-rs-settings"></i>
+                    </button>
+                    ${caption ? `<p class="image-caption" style="text-align: center; font-style: italic; color: #666; margin-top: 5px;">${caption}</p>` : ''}
+                </div>
+            `;
+
+                this.insertHTML(imageHtml);
+
+                // Réinitialiser les champs
+                urlInput.value = '';
+                altInput.value = '';
+                widthInput.value = '';
+                alignSelect.value = 'left';
+                captionInput.value = '';
+                editingImage = null;
+
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                modalInstance.hide();
             }
+        });
 
-            this.insertImageElement(imageSrc, alt);
-            console.log('Image inserted successfully');
-            return Promise.resolve();
+        // Exposer la méthode editImage globalement
+        window.editorInstance = this;
 
-        } catch (error) {
-            console.error('Error inserting image:', error);
-            alert('Erreur lors de l\'insertion de l\'image');
-            return Promise.reject(error);
-        } finally {
-            this.isProcessing = false;
-        }
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+    }
+
+    // Ajouter la méthode editImage
+    editImage(button) {
+        const wrapper = button.closest('.media-wrapper');
+        const img = wrapper.querySelector('img');
+        const caption = wrapper.querySelector('.image-caption');
+
+        // Remplir la modal avec les valeurs actuelles
+        document.getElementById('imageUrl').value = img.src;
+        document.getElementById('imageAlt').value = img.alt || '';
+        document.getElementById('imageWidth').value = img.style.width || 'auto';
+
+        // Déterminer l'alignement
+        const wrapperStyle = wrapper.style.textAlign || 'left';
+        document.getElementById('imageAlign').value = wrapperStyle;
+
+        document.getElementById('imageCaption').value = caption ? caption.textContent : '';
+
+        // Marquer l'image comme étant en édition
+        this.editingImage = img;
+
+        // Ouvrir la modal
+        this.insertImage();
     }
 
     /**
@@ -697,33 +794,79 @@ class RichEditor {
     /**
      * Insertion de tableau
      */
-    async insertTable() {
-        if (this.isProcessing) return Promise.reject('Already processing');
+    insertTable() {
+        const modal = document.getElementById('tableModal');
+        const rowsInput = document.getElementById('tableRows');
+        const colsInput = document.getElementById('tableCols');
+        const insertTableBtn = document.getElementById('insertTable');
 
-        this.isProcessing = true;
-        console.log('Starting table insertion...');
+        let editingTable = null;
 
-        try {
-            const rows = parseInt(document.getElementById('tableRows')?.value) || 3;
-            const cols = parseInt(document.getElementById('tableCols')?.value) || 3;
-            const hasHeader = document.getElementById('tableHeader')?.checked || false;
-            const style = document.querySelector('input[name="tableStyle"]:checked')?.value || 'default';
-            const responsive = document.getElementById('tableResponsive')?.checked || false;
+        const newInsertBtn = insertTableBtn.cloneNode(true);
+        insertTableBtn.parentNode.replaceChild(newInsertBtn, insertTableBtn);
 
-            const tableWrapper = this.createTable(rows, cols, hasHeader, style, responsive);
-            this.insertNodeAtCursor(tableWrapper);
-            this.placeCursorAfterElement(tableWrapper);
-            this.updateHiddenField();
+        newInsertBtn.addEventListener('click', () => {
+            const rows = parseInt(rowsInput.value) || 2;
+            const cols = parseInt(colsInput.value) || 2;
 
-            console.log('Table inserted successfully');
-            return Promise.resolve();
+            if (editingTable) {
+                const wrapper = editingTable.closest('.media-wrapper');
+                if (wrapper) {
+                    wrapper.remove();
+                }
+            }
 
-        } catch (error) {
-            console.error('Error inserting table:', error);
-            return Promise.reject(error);
-        } finally {
-            this.isProcessing = false;
-        }
+            let tableHtml = `
+            <div class="media-wrapper table-wrapper">
+                <table class="table table-bordered">
+                    <thead><tr>`;
+
+            for (let j = 0; j < cols; j++) {
+                tableHtml += `<th>En-tête ${j + 1}</th>`;
+            }
+
+            tableHtml += `</tr></thead><tbody>`;
+
+            for (let i = 0; i < rows; i++) {
+                tableHtml += '<tr>';
+                for (let j = 0; j < cols; j++) {
+                    tableHtml += `<td>Cellule ${i + 1}-${j + 1}</td>`;
+                }
+                tableHtml += '</tr>';
+            }
+
+            tableHtml += `</tbody></table>
+            <button class="media-config-btn" onclick="window.editorInstance.editTable(this)" title="Modifier le tableau">
+                <i class="fi fi-rs-settings"></i>
+            </button>
+        </div>`;
+
+            this.insertHTML(tableHtml);
+
+            rowsInput.value = '2';
+            colsInput.value = '2';
+            editingTable = null;
+
+            const modalInstance = bootstrap.Modal.getInstance(modal);
+            modalInstance.hide();
+        });
+
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+    }
+
+    // Ajouter la méthode editTable
+    editTable(button) {
+        const wrapper = button.closest('.media-wrapper');
+        const table = wrapper.querySelector('table');
+        const rows = table.querySelectorAll('tbody tr').length;
+        const cols = table.querySelectorAll('thead th').length;
+
+        document.getElementById('tableRows').value = rows;
+        document.getElementById('tableCols').value = cols;
+
+        this.editingTable = table;
+        this.insertTable();
     }
 
     /**
@@ -876,40 +1019,71 @@ class RichEditor {
     /**
      * Insertion de vidéo YouTube
      */
-    async insertVideo() {
-        if (this.isProcessing) return Promise.reject('Already processing');
+    insertVideo() {
+        const modal = document.getElementById('videoModal');
+        const urlInput = document.getElementById('videoUrl');
+        const insertVideoBtn = document.getElementById('insertVideo');
 
-        this.isProcessing = true;
-        console.log('Starting video insertion...');
+        let editingVideo = null;
 
-        try {
-            const videoUrl = document.getElementById('videoUrl')?.value?.trim();
-            const width = parseInt(document.getElementById('videoWidth')?.value) || 560;
-            const height = parseInt(document.getElementById('videoHeight')?.value) || 315;
-            const align = document.querySelector('input[name="videoAlign"]:checked')?.value || 'center';
-            const responsive = document.getElementById('videoResponsive')?.checked || false;
+        const newInsertBtn = insertVideoBtn.cloneNode(true);
+        insertVideoBtn.parentNode.replaceChild(newInsertBtn, insertVideoBtn);
 
-            const videoId = this.extractYouTubeId(videoUrl);
-            if (!videoId) {
-                alert('URL YouTube invalide');
-                return Promise.reject('Invalid YouTube URL');
+        newInsertBtn.addEventListener('click', () => {
+            const url = urlInput.value;
+
+            if (url) {
+                const videoId = this.extractVideoId(url);
+
+                if (videoId) {
+                    if (editingVideo) {
+                        const wrapper = editingVideo.closest('.media-wrapper');
+                        if (wrapper) {
+                            wrapper.remove();
+                        }
+                    }
+
+                    const videoHtml = `
+                    <div class="media-wrapper video-wrapper" style="text-align: center; margin: 20px 0;">
+                        <iframe width="560" height="315" 
+                            src="https://www.youtube.com/embed/${videoId}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <button class="media-config-btn" onclick="window.editorInstance.editVideo(this)" title="Modifier la vidéo">
+                            <i class="fi fi-rs-settings"></i>
+                        </button>
+                    </div>
+                `;
+
+                    this.insertHTML(videoHtml);
+                    urlInput.value = '';
+                    editingVideo = null;
+
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                } else {
+                    alert('URL YouTube invalide');
+                }
             }
+        });
 
-            const videoWrapper = this.createVideoElement(videoId, width, height, align, responsive);
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+    }
 
-            // UTILISER la même méthode que pour les images
-            this.insertVideoAtCursor(videoWrapper);
-            this.updateHiddenField();
+    // Ajouter la méthode editVideo
+    editVideo(button) {
+        const wrapper = button.closest('.media-wrapper');
+        const iframe = wrapper.querySelector('iframe');
+        const src = iframe.src;
+        const videoId = src.split('/embed/')[1].split('?')[0];
 
-            console.log('Video inserted successfully');
-            return Promise.resolve();
+        document.getElementById('videoUrl').value = `https://www.youtube.com/watch?v=${videoId}`;
 
-        } catch (error) {
-            console.error('Error inserting video:', error);
-            return Promise.reject(error);
-        } finally {
-            this.isProcessing = false;
-        }
+        this.editingVideo = iframe;
+        this.insertVideo();
     }
 
     /**

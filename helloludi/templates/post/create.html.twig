@@ -670,11 +670,13 @@
             // Validation avant soumission
             document.getElementById('postForm').addEventListener('submit', function (e) {
                 const editorContent = document.getElementById('editorContent');
-                const hiddenField = document.getElementById('hiddenContent');
+                const hiddenField = document.querySelector('textarea[name="post[content]"]');
 
                 if (editorContent && hiddenField) {
+                    // Forcer la mise à jour du champ caché
                     hiddenField.value = editorContent.innerHTML;
-                    console.log('Content forcé dans le champ caché:', hiddenField.value);
+                    hiddenField.style.display = 'none !important';
+                    console.log('Contenu synchronisé:', hiddenField.value);
                 }
 
                 const textContent = editorContent ? editorContent.textContent.trim() : '';
@@ -686,6 +688,7 @@
                     return false;
                 }
 
+                // Ne pas empêcher la soumission si tout est OK
                 return true;
             });
         });
